@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -35,19 +36,21 @@ import {
 } from "@/components/ui/select";
 
 interface UpsertPatientFormProps {
-  defaultValues?: UpsertPatientInput;
+  patient?: UpsertPatientInput;
   onSuccess?: () => void;
   onCancel?: () => void;
+  isOpen?: boolean;
 }
 
 export function UpsertPatientForm({
-  defaultValues,
+  patient,
   onSuccess,
   onCancel,
+  isOpen,
 }: UpsertPatientFormProps) {
   const form = useForm<UpsertPatientInput>({
     resolver: zodResolver(upsertPatientSchema),
-    defaultValues: defaultValues || {
+    defaultValues: patient || {
       name: "",
       email: "",
       phoneNumber: "",
@@ -57,9 +60,7 @@ export function UpsertPatientForm({
 
   const { execute, status } = useAction(upsertPatient, {
     onSuccess: () => {
-      toast.success(
-        defaultValues ? "Paciente atualizado!" : "Paciente cadastrado!",
-      );
+      toast.success(patient ? "Paciente atualizado!" : "Paciente cadastrado!");
       onSuccess?.();
     },
     onError: ({ error }) => {
@@ -70,6 +71,12 @@ export function UpsertPatientForm({
   const onSubmit = form.handleSubmit((data) => {
     execute(data);
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset(patient);
+    }
+  }, [isOpen, form, patient]);
 
   return (
     <DialogContent>
@@ -164,7 +171,7 @@ export function UpsertPatientForm({
               </Button>
             )}
             <Button type="submit" disabled={status === "executing"}>
-              {defaultValues ? "Atualizar" : "Cadastrar"}
+              {patient ? "Atualizar" : "Cadastrar"}
             </Button>
           </div>
         </form>
