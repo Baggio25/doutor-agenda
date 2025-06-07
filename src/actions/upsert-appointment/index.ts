@@ -63,4 +63,5 @@ export const upsertAppointment = actionClient
         },
       });
     revalidatePath("/appointments");
+    revalidatePath("/dashboard");
   });
