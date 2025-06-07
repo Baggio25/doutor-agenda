@@ -151,6 +151,22 @@ const UpsertAppointmentForm = ({
     });
   };
 
+  const isDateAvailable = (date: Date) => {
+    if (!selectedDoctorId) return false;
+
+    const selectedDoctor = doctors.find(
+      (doctor) => doctor.id === selectedDoctorId,
+    );
+
+    if (!selectedDoctor) return false;
+
+    const dayOfWeek = dayjs(date).day();
+    return (
+      dayOfWeek >= selectedDoctor?.availableFromWeekDay &&
+      dayOfWeek <= selectedDoctor?.availableToWeekDay
+    );
+  };
+
   const isDateTimeEnabled = selectedPatientId && selectedDoctorId;
 
   return (
@@ -280,7 +296,7 @@ const UpsertAppointmentForm = ({
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
-                        date < new Date() || date < new Date("1900-01-01")
+                        date < new Date() || !isDateAvailable(date)
                       }
                       initialFocus
                       locale={ptBR}
