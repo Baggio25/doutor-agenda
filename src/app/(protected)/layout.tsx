@@ -1,3 +1,5 @@
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ReactQueryProvider } from "@/providers/react-query";
 
@@ -9,7 +11,9 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
       <AppSidebar />
       <main className="w-full">
         <SidebarTrigger />
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </ReactQueryProvider>
       </main>
     </SidebarProvider>
   );

@@ -71,7 +71,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b p-4">
         <Image src="/Logo.svg" alt="Doutor Agenda" width={136} height={28} />
       </SidebarHeader>
