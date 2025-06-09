@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { patientsTable } from "@/db/schema";
 
-import { UpsertPatientForm } from "./upsert-patient-form";
+import UpsertPatientForm from "./upsert-patient-form";
 
 type PatientTableActionProps = {
   patient: typeof patientsTable.$inferSelect;

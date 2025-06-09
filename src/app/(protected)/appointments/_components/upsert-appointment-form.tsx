@@ -343,7 +343,11 @@ const UpsertAppointmentForm = ({
           />
 
           <DialogFooter>
-            <Button type="submit" disabled={upsertAppointmentAction.isPending}>
+            <Button
+              type="submit"
+              disabled={upsertAppointmentAction.isPending}
+              className="w-full"
+            >
               {upsertAppointmentAction.isPending
                 ? "Salvando..."
                 : appointment
