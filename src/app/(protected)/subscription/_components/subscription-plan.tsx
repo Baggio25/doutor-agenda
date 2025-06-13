@@ -2,6 +2,7 @@
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Check, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 
 import { createStripeCheckout } from "@/actions/create-stripe-checkout";
@@ -17,11 +18,14 @@ import {
 
 interface SubscriptionPlanProps {
   active?: boolean;
+  userEmail?: string;
 }
 
 export default function SubscriptionPlan({
   active = false,
+  userEmail,
 }: SubscriptionPlanProps) {
+  const router = useRouter();
   const createStripeCheckoutAction = useAction(createStripeCheckout, {
     onSuccess: async ({ data }) => {
       if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
@@ -58,6 +62,12 @@ export default function SubscriptionPlan({
     createStripeCheckoutAction.execute();
   };
 
+  const handleManagePlanClick = () => {
+    router.push(
+      `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL}?prefilled_email=${userEmail}`,
+    );
+  };
+
   return (
     <Card className="w-full max-w-sm border border-gray-200 bg-white shadow-sm">
       <CardHeader className="pb-4">
@@ -73,7 +83,7 @@ export default function SubscriptionPlan({
           {active && (
             <Badge
               variant="secondary"
-              className="bg-primary-10 text-primary hover:bg-primary-10 px-3 py-1 font-medium"
+              className="bg-emerald-100 px-3 py-1 font-medium text-emerald-500 hover:bg-emerald-100"
             >
               Atual
             </Badge>
@@ -103,7 +113,7 @@ export default function SubscriptionPlan({
         <Button
           className="w-full cursor-pointer bg-gray-900 py-3 font-medium text-white hover:bg-gray-800"
           size="lg"
-          onClick={active ? () => {} : handleSubscribeClick}
+          onClick={active ? handleManagePlanClick : handleSubscribeClick}
           disabled={createStripeCheckoutAction.isExecuting}
         >
           {createStripeCheckoutAction.isExecuting ? (

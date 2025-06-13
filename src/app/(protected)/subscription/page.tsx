@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import {
-  PageActions,
   PageContainer,
   PageContent,
   PageDescription,
@@ -7,10 +9,23 @@ import {
   PageHeaderContent,
   PageTitle,
 } from "@/components/ui/page-container";
+import { auth } from "@/lib/auth";
 
 import SubscriptionPlan from "./_components/subscription-plan";
 
-const SubscriptionPage = () => {
+const SubscriptionPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  if (!session.user.clinic) {
+    redirect("/clinic-form");
+  }
+
   return (
     <PageContainer>
       <PageHeader>
@@ -20,10 +35,12 @@ const SubscriptionPage = () => {
             Gerencie a assinatura da sua clínica.
           </PageDescription>
         </PageHeaderContent>
-        <PageActions>...</PageActions>
       </PageHeader>
       <PageContent>
-        <SubscriptionPlan />
+        <SubscriptionPlan
+          active={session.user.plan === "essential"}
+          userEmail={session.user.email}
+        />
       </PageContent>
     </PageContainer>
   );
